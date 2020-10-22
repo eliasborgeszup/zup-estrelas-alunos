@@ -1,1 +1,1 @@
-# zup-estrelas-spring-api
+# zup-estrelas-alunos
