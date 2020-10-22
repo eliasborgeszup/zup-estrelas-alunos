@@ -8,50 +8,52 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import br.com.zup.estrelas.alunos.entity.Aluno;
-import br.com.zup.estrelas.alunos.repository.AlunoRepository;
+import br.com.zup.estrelas.alunos.service.AlunoService;
 
 @RestController
 @RequestMapping("/alunos")
 public class AlunoController {
 	@Autowired
-	AlunoRepository repository;
+	AlunoService alunoservice;
 	
 	@PostMapping
 	public Aluno insereAluno(@RequestBody Aluno aluno) {
-		return this.repository.save(aluno);
+		return this.alunoservice.insereAluno(aluno);
 	}
-	
-	@DeleteMapping(path = "/delete/{matricula}")
-	public String removeAluno(@PathVariable Long matricula) {
-		this.repository.deleteById(matricula);
-		
-		return "Removido com sucesso";
+
+	@DeleteMapping(path = "/{matricula}")
+	public boolean removeAluno(@PathVariable Long matricula) {
+		return this.alunoservice.removeAluno(matricula);
 	}
-	
-	@GetMapping(path = "/{matricula}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public Aluno buscaAluno(@PathVariable Long matricula) {
-		return this.repository.findById(matricula).get();
+
+	@GetMapping(path = "/{matricula}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Aluno buscaAlunoMatricula(@PathVariable Long matricula) {
+		return this.alunoservice.buscaAlunoMatricula(matricula);
 	}
-	
-	@GetMapping(path = "/cpf/{cpf}", produces = {MediaType.APPLICATION_JSON_VALUE})
+
+	@GetMapping(path = "/cpf/{cpf}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Aluno buscaAlunoCpf(@PathVariable String cpf) {
-		return this.repository.findByCpf(cpf);
+		return this.alunoservice.buscaAlunoCpf(cpf);
 	}
-	
-	@GetMapping(path = "/nome/{nome}", produces = {MediaType.APPLICATION_JSON_VALUE})
+
+	@GetMapping(path = "/nome/{nome}", produces = { MediaType.APPLICATION_JSON_VALUE })
 	public Aluno buscaAlunoNome(@PathVariable String nome) {
-		return this.repository.findByNome(nome);
+		return this.alunoservice.buscaAlunoNome(nome);
+	}
+
+	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE })
+	public List<Aluno> buscaAlunos() {
+		return this.alunoservice.buscaAlunos();
 	}
 	
-	@GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
-	public List<Aluno> buscaAlunos(){
-		return (List<Aluno>) this.repository.findAll();
+	@PutMapping(path = "/{matricula}", produces = { MediaType.APPLICATION_JSON_VALUE })
+	public Aluno alteraAluno(@PathVariable Long matricula, @RequestBody Aluno aluno) {
+		return this.alunoservice.alteraAluno(matricula, aluno);
 	}
-	
+
 }
